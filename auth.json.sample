@@ -1,0 +1,6 @@
+{
+"ConsumerKey"   : "abc",
+"ConsumerSecret": "def",
+"TokenValue"    : "ghi",
+"TokenSecret"   : "jkl"
+}
