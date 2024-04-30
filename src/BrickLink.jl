@@ -6,6 +6,7 @@ import Random
 import OAuth
 import HTTP
 import DataFrames
+import CSV
 
 include("prices.jl")
 
