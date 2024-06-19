@@ -12,15 +12,15 @@ fi = joinpath(fldr,"auth.json")
 @assert isfile(fi)
 credentials = JSON3.read(fi);
 
-#request prices from BrickLink API
-dfres = DataFrames.DataFrame()
-
 #test
 setno = sets.set_no[1]
 setnostring = string(setno) * "-1"
 di = Dict("type"=>"SET","no"=>setnostring,"new_or_used"=>"U","currency_code"=>"CHF") #U for used, N for new
 dftest = get_prices(credentials,di)
-        
+
+
+#request prices from BrickLink API
+dfres = DataFrames.DataFrame()
 for setno in sets.set_no
     setnostring = string(setno) * "-1"
     try
