@@ -18,7 +18,6 @@ setnostring = string(setno) * "-1"
 di = Dict("type"=>"SET","no"=>setnostring,"new_or_used"=>"U","currency_code"=>"CHF") #U for used, N for new
 dftest = get_prices(credentials,di)
 
-
 #request prices from BrickLink API
 dfres = DataFrames.DataFrame()
 for setno in sets.set_no
