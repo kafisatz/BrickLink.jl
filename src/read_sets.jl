@@ -1,4 +1,4 @@
-using BrickLink;import CSV; using DataFrames; using JSON3
+using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth
 
 #list of sets
 pt = pathof(BrickLink)
@@ -13,6 +13,7 @@ fi = joinpath(fldr,"auth.json")
 credentials = JSON3.read(fi);
 
 #test
+setno = 75098
 setno = sets.set_no[1]
 setnostring = string(setno) * "-1"
 di = Dict("type"=>"SET","no"=>setnostring,"new_or_used"=>"U","currency_code"=>"CHF") #U for used, N for new

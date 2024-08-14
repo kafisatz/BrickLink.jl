@@ -1,4 +1,3 @@
-
 export get_prices
 function get_prices(credentials,di)
 
@@ -23,6 +22,8 @@ imgurl = raw"https://" * resdesc.data.image_url[3:end]
 @assert res.status == 200
 
 #item prices
+#options = Dict{String,String}("new_or_used"=>di["new_or_used"])
+#options = Dict{String,String}("currency_code"=>di["currency_code"])
 options = Dict{String,String}("currency_code"=>di["currency_code"],"new_or_used"=>di["new_or_used"])
 query_str = HTTP.escapeuri(options)
 endpoint = string(baseurl,"/items/",di["type"],"/",di["no"],"/price")
@@ -36,7 +37,7 @@ js.data.new_or_used
 js.data.currency_code
 js.data.price_detail
 
-#extract prices 
+#extract prices
 prices = js.data.price_detail
 pricelist = Float64[]
 for i=1:length(prices)
