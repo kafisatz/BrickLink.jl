@@ -66,9 +66,12 @@ function get_prices(credentials,di::Dict,sets::DataFrames.DataFrame)
     #request prices from BrickLink API
     dfres = DataFrames.DataFrame()
     for setno in sets.set_no
+        @show setno
         setnostring = string(setno) * "-1"
+        thisdi = deepcopy(di)
+        thisdi["no"] = setnostring
         try
-            df = get_prices(credentials,di)
+            df = get_prices(credentials,thisdi)
             println("Querying prices for set $setnostring ...")
             append!(dfres,df,cols=:union)
         catch e 

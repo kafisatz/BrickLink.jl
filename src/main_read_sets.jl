@@ -24,7 +24,7 @@ dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
 #used
-@time df_used = get_prices(credentials,di,sets::DataFrame)
+@time df_used = get_prices(credentials,di,sets)
 
 #new prices
 @time df_new = get_prices(credentials,di_new,sets)
