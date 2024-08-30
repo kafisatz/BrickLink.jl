@@ -9,5 +9,6 @@ import DataFrames
 import CSV
 
 include("prices.jl")
+include("download.jl")
 
 end

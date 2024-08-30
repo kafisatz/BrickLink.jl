@@ -1,5 +1,5 @@
 export get_prices
-function get_prices(credentials,di)
+function get_prices(credentials,di::Dict)
 
 httpmethod = "GET"
 
@@ -25,6 +25,7 @@ imgurl = raw"https://" * resdesc.data.image_url[3:end]
 #options = Dict{String,String}("new_or_used"=>di["new_or_used"])
 #options = Dict{String,String}("currency_code"=>di["currency_code"])
 options = Dict{String,String}("currency_code"=>di["currency_code"],"new_or_used"=>di["new_or_used"])
+@show di["new_or_used"]
 query_str = HTTP.escapeuri(options)
 endpoint = string(baseurl,"/items/",di["type"],"/",di["no"],"/price")
 oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials.ConsumerKey, credentials.ConsumerSecret, credentials.TokenValue, credentials.TokenSecret)
@@ -59,3 +60,23 @@ dfout = hcat(df3,df2)
 
 return dfout 
 end
+
+export get_prices
+function get_prices(credentials,di::Dict,sets::DataFrames.DataFrame)
+    #request prices from BrickLink API
+    dfres = DataFrames.DataFrame()
+    for setno in sets.set_no
+        setnostring = string(setno) * "-1"
+        try
+            df = get_prices(credentials,di)
+            println("Querying prices for set $setnostring ...")
+            append!(dfres,df,cols=:union)
+        catch e 
+            println("Error querying prices for set $setnostring")
+            @show e
+        end
+    end
+
+    return dfres
+end
+
