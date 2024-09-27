@@ -31,25 +31,25 @@ RUN apt-get update
 RUN mkdir -p /usr/local/BrickLink.jl
 COPY . /usr/local/BrickLink.jl
 
-#copy auth file 
-COPY /root/auth.json auth.json
-
 #set workdir
 WORKDIR /usr/local/BrickLink.jl
 
 #install dependencies 
 RUN julia /usr/local/BrickLink.jl/deps/dockerdeps.jl
 
-
-#ports
+#exports
 EXPOSE 8003
 
 ########################################################################
 #enviroment variables
 ########################################################################
-#ARG QBITTORRENT_PASSWORD
-#ENV QBITTORRENT_PASSWORD $QBITTORRENT_PASSWORD
+#ARG ConsumerKey
+#ENV ConsumerKey $ConsumerKey
 
+#https://stackoverflow.com/questions/75668905/adding-secret-to-docker-build-from-environment-variable-rather-than-a-file
+#RUN --mount=type=secret,id=my_secret_id \
+# export MY_SECRET=$(cat /run/secrets/my_secret_id) && \
+# echo $MY_SECRET # would output "foo"
 ########################################################################
 #run Tests
 ########################################################################

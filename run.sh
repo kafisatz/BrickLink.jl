@@ -2,6 +2,10 @@
 
 #the above line should ensure that enviroment variables are picked up (/.bashrc or maybe /.profile)
 
+#read the .env file
+export $(grep -v '^#' /root/.env | xargs)
+echo $influxtoken
+
 export DOCKER_SCAN_SUGGEST=false
 
 stop_timeout=10
