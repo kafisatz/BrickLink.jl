@@ -9,7 +9,7 @@ endpoint = string(baseurl,"/items/",di["type"],"/",di["no"])
 
 options = Dict{String,String}(""=>"")
 query_str = HTTP.escapeuri(options)
-oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials.ConsumerKey, credentials.ConsumerSecret, credentials.TokenValue, credentials.TokenSecret)
+oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials["ConsumerKey"], credentials["ConsumerSecret"], credentials["TokenValue"], credentials["TokenSecret"])
 
 #Make request
 #item details
@@ -28,7 +28,7 @@ options = Dict{String,String}("currency_code"=>di["currency_code"],"new_or_used"
 #@show di["new_or_used"]
 query_str = HTTP.escapeuri(options)
 endpoint = string(baseurl,"/items/",di["type"],"/",di["no"],"/price")
-oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials.ConsumerKey, credentials.ConsumerSecret, credentials.TokenValue, credentials.TokenSecret)
+oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials["ConsumerKey"], credentials["ConsumerSecret"], credentials["TokenValue"], credentials["TokenSecret"])
 resprice = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"))
 
 js = JSON3.read(IOBuffer(resprice.body))

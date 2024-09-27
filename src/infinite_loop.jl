@@ -44,7 +44,7 @@ end
 INFLUX_USER="bernhard"
 INFLUX_ORG="bk"
 #note - token is only working for the bricklink bucket
-INFLUX_TOKEN = credentials.influxtoken
+INFLUX_TOKEN = credentials["influxtoken"]
 INFLUX_URL = "http://influx.diro.ch"
 isett = InfluxDBClient.get_settings(org=INFLUX_ORG,user=INFLUX_USER,url=INFLUX_URL,token=INFLUX_TOKEN);
 
