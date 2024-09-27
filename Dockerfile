@@ -36,7 +36,7 @@ WORKDIR /usr/local/BrickLink.jl
 
 #install dependencies 
 RUN julia /usr/local/BrickLink.jl/deps/dockerdeps.jl
-
+ 
 #exports
 EXPOSE 8003
 
