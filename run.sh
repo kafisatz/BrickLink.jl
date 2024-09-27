@@ -4,7 +4,6 @@
 
 #read the .env file
 export $(grep -v '^#' /root/.env | xargs)
-echo $influxtoken
 
 export DOCKER_SCAN_SUGGEST=false
 
@@ -35,6 +34,10 @@ pushd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" > /dev
 
 tag=$(cat Dockerfile | grep -oP 'cicd="\K\w+' | tail -1)
 echo_title tag=$tag
+
+#test if env variable are set
+echo_title influxtoken=$influxtoken
+
 if [ -z "$tag" ] ; then
   printf "\nNo cicd LABEL found in Dockerfile.\n\n"
   exit 1
@@ -85,7 +88,11 @@ if [ "$need_start" == "false" ] ; then
 elif [ "$need_build" == "true" ]; then
   echo_title "BUILDING & STARTING CONTAINER"  
   #docker build . -t $tag #NO ARGUMENTS
-  docker build . -t $tag
+  #docker build . -t $tag
+
+    #with build args
+    docker build -t $tag --build-arg ConsumerKey=$ConsumerKey --build-arg ConsumerSecret=$ConsumerSecret --build-arg TokenValue=$TokenValue --build-arg TokenSecret=$TokenSecret --build-arg influxtoken=$influxtoken .
+
   #docker-compose up -d 
   docker container rm $tag || true
   #NOTE -t is 'Allocate a pseudo-tty' it has nothing to do with the tag

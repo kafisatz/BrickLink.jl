@@ -43,8 +43,20 @@ EXPOSE 8003
 ########################################################################
 #enviroment variables
 ########################################################################
-#ARG ConsumerKey
-#ENV ConsumerKey $ConsumerKey
+ARG ConsumerKey
+ENV ConsumerKey $ConsumerKey
+
+ARG ConsumerSecret
+ENV ConsumerSecret $ConsumerSecret
+
+ARG TokenValue
+ENV TokenValue $TokenValue
+
+ARG TokenSecret
+ENV TokenSecret $TokenSecret
+
+ARG influxtoken
+ENV influxtoken $influxtoken
 
 #https://stackoverflow.com/questions/75668905/adding-secret-to-docker-build-from-environment-variable-rather-than-a-file
 #RUN --mount=type=secret,id=my_secret_id \
