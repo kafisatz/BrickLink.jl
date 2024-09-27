@@ -2,7 +2,7 @@ using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using H
 
 #list of sets
 pt = pathof(BrickLink)
-fi = normpath(joinpath(pt,"..","ucs_list.txt"))
+fi = normpath(joinpath(pt,"..","set_list.txt"))
 sets = CSV.read(fi,DataFrames.DataFrame,header=false)
 DataFrames.rename!(sets,Dict(1=>"set_no"));
 
@@ -34,5 +34,5 @@ imgfldr = raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\starwars_brickl
 @assert isdir(imgfldr)
 download_images(df_used,imgfldr)
 
-CSV.write(raw"C:\temp\prices.csv",df_used)
+CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
