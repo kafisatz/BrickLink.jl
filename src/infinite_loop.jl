@@ -17,8 +17,13 @@ n_sec_sleep_on_failure = 60 #one minute
 ##############################################################################################################
 ##############################################################################################################
 #credentials
+cands = ["/root/auth.json"] #docker
 fldr =  Sys.iswindows() ? fldr = ENV["USERPROFILE"] : ENV["HOME"]
-fi = joinpath(fldr,"auth.json")
+push!(cands,joinpath(fldr,"auth.json"))
+filter!(x->isfile(x),cands)
+@assert length(cands) > 0
+fi = cands[1]
+
 @assert isfile(fi)
 credentials = JSON3.read(fi);
 

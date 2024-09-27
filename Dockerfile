@@ -31,6 +31,9 @@ RUN apt-get update
 RUN mkdir -p /usr/local/BrickLink.jl
 COPY . /usr/local/BrickLink.jl
 
+#copy auth file 
+COPY ~/auth.json /root/auth.json
+
 #set workdir
 WORKDIR /usr/local/BrickLink.jl
 
