@@ -17,7 +17,7 @@ n_sec_sleep_on_failure = 60 #one minute
 ##############################################################################################################
 ##############################################################################################################
 #credentials
-fldr = ENV["USERPROFILE"]
+fldr =  Sys.iswindows() ? fldr = ENV["USERPROFILE"] : ENV["HOME"]
 fi = joinpath(fldr,"auth.json")
 @assert isfile(fi)
 credentials = JSON3.read(fi);
