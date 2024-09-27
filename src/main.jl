@@ -15,6 +15,11 @@ function main(sets,credentials,di,di_new,isett,n_sec_sleep_on_failure,n_sec_slee
         write_to_influxdb(df,isett)
         
         @info("Success: $(Dates.now()). Next iteration in $(round(n_sec_sleep/3600,digits=3)) hours")
+
+        #send OK to uptimekuma
+        uptimekuma_url_OK = """https://uptimekuma.diro.ch/api/push/74KRGkaRkc?status=up&msg=OK&ping=9"""
+        HTTP.get(uptimekuma_url_OK)
+
         sleep(n_sec_sleep)
     catch error271
          @show error271
