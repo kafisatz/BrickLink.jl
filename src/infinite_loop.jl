@@ -17,15 +17,29 @@ n_sec_sleep_on_failure = 60 #one minute
 ##############################################################################################################
 ##############################################################################################################
 #credentials
+credli = ["ConsumerKey", "ConsumerSecret","TokenValue","TokenSecret","influxtoken"]
+
 cands = ["/root/auth.json"] #docker
 fldr =  Sys.iswindows() ? fldr = ENV["USERPROFILE"] : ENV["HOME"]
 push!(cands,joinpath(fldr,"auth.json"))
 filter!(x->isfile(x),cands)
-@assert length(cands) > 0
-fi = cands[1]
+if length(cands) > 0
+    fi = cands[1]
+    credentials = JSON3.read(fi);
+else 
+    #use environment variables    
+    credentials = Dict()
+    for i in credli
+        credentials[i] = get(ENV,i,"")
+    end
+end
 
-@assert isfile(fi)
-credentials = JSON3.read(fi);
+#check credentials
+@assert length(credentials) > 0
+for k in credli
+    @assert haskey(credentials,k)
+    @assert length(credentials[k]) > 0
+end
 
 INFLUX_USER="bernhard"
 INFLUX_ORG="bk"
