@@ -87,7 +87,7 @@ function inf_loop(sets,credentials,di,di_new,isett,n_sec_sleep_on_failure,n_sec_
             #small batch for testing
             szmax = min(3,size(sets,1))
             main(sets[1:szmax,:],credentials,di,di_new,isett,n_sec_sleep_on_failure,10)
-        else 
+        else
             main(sets,credentials,di,di_new,isett,n_sec_sleep_on_failure,n_sec_sleep)
         end
     

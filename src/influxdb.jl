@@ -28,15 +28,18 @@ function write_to_influxdb(df_in::DataFrames.DataFrame,isett)
     end
 
     #write to db 
+    batchsize = 100
     bkt="bricklink"
     DataFrames.rename!(dfinflux, :item2 => :setno)
     dfinflux[!,:datetime] .= dt
-    rs,lp = write_dataframe(settings=isett,bucket=bkt,measurement="prices",data=dfinflux,fields=["currency","name","price"],timestamp=:datetime,tags=String["type","currency","setno","new_or_used"],tzstr = "Europe/Berlin",compress=true);
+    @show size(dfinflux)
+    rs,lp = write_dataframe(settings=isett,batchsize=batchsize,bucket=bkt,measurement="prices",data=dfinflux,fields=["currency","name","price"],timestamp=:datetime,tags=String["type","currency","setno","new_or_used"],tzstr = "Europe/Berlin",compress=true);
 
     #select minimum price per set
     dfinflux_min_price = DataFrames.combine(DataFrames.groupby(dfinflux, [:setno,:name,:type,:new_or_used,:currency]), :price => minimum => :price)
     dfinflux_min_price[!,:datetime] .= dt
-    rs,lp = write_dataframe(settings=isett,bucket=bkt,measurement="minimum_price",data=dfinflux_min_price,fields=["currency","name","price"],timestamp=:datetime,tags=String["type","currency","setno","new_or_used"],tzstr = "Europe/Berlin",compress=true);
+    @show size(dfinflux_min_price)
+    rs,lp = write_dataframe(settings=isett,batchsize=batchsize,bucket=bkt,measurement="minimum_price",data=dfinflux_min_price,fields=["currency","name","price"],timestamp=:datetime,tags=String["type","currency","setno","new_or_used"],tzstr = "Europe/Berlin",compress=true);
 
     return nothing 
 end
