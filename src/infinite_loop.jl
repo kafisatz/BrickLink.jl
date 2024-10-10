@@ -90,7 +90,7 @@ function inf_loop(sets,credentials,di,di_new,isett,n_sec_sleep_on_failure,n_sec_
         else
             main(sets,credentials,di,di_new,isett,n_sec_sleep_on_failure,n_sec_sleep)
         end
-    
+        
         loop_counter += 1
     end
     return nothing 
