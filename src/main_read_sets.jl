@@ -36,3 +36,4 @@ download_images(df_used,imgfldr)
 
 CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
+#mf = get_minifigs("75173-1",credentials)

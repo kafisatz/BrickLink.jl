@@ -15,5 +15,6 @@ include("prices.jl")
 include("download.jl")
 include("main.jl")
 include("influxdb.jl")
+include("minifigs.jl")
 
 end
