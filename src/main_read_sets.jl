@@ -6,9 +6,9 @@ fi = normpath(joinpath(pt,"..","set_list.txt"))
 sets = CSV.read(fi,DataFrames.DataFrame,header=false)
 DataFrames.rename!(sets,Dict(1=>"set_no"));
 unique!(sets)
-#CSV.write(fi,sets)
+#CSV.write(fi,sets)  
 #CSV.write(fi,sets,header=false)
-
+ 
 #credentials
 fldr = ENV["USERPROFILE"]
 fi = joinpath(fldr,"auth.json")
