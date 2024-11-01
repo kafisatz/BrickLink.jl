@@ -14,6 +14,6 @@ mfs = get_minifigs(setnos_SHORT,credentials)
 #20 seconds for 150 sets ~ 450 minifigs
 @time mf = get_minifigs(setnos,credentials)
 
-CSV.write(raw"C:\temp\minifigs_which_we_should_have.csv",mf)
+CSV.write(raw"C:\temp\minifigs_list.csv",mf)
 
 
