@@ -13,7 +13,7 @@ oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials
 
 #Make request
 #item details
-res = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"))
+res = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"),require_ssl_verification=false)
 resdesc = JSON3.read(IOBuffer(res.body))
 resdesc.data.name
 resdesc.data.year_released
@@ -29,7 +29,7 @@ options = Dict{String,String}("currency_code"=>di["currency_code"],"new_or_used"
 query_str = HTTP.escapeuri(options)
 endpoint = string(baseurl,"/items/",di["type"],"/",di["no"],"/price")
 oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials["ConsumerKey"], credentials["ConsumerSecret"], credentials["TokenValue"], credentials["TokenSecret"])
-resprice = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"))
+resprice = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"),require_ssl_verification=false)
 
 js = JSON3.read(IOBuffer(resprice.body))
 js.data
@@ -57,6 +57,8 @@ year_released = resdesc.data.year_released
 imgurl = raw"https://" * resdesc.data.image_url[3:end]
 df3 = DataFrames.DataFrame(item=js.data.item.no,type=js.data.item.type,name=name,year_released = year_released,new_or_used=js.data.new_or_used,currency=js.data.currency_code,imgurl=imgurl)
 dfout = hcat(df3,df2)
+
+dfout.name .= fix_json_parsing.(dfout.name)
 
 return dfout 
 end

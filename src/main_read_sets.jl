@@ -23,6 +23,7 @@ di = Dict("type"=>"SET","no"=>setnostring,"new_or_used"=>"U","currency_code"=>"C
 di_new = deepcopy(di)
 di_new["new_or_used"] = "N"
 
+@warn("if this fails make sure that your ip is added here: \nhttps://www.bricklink.com/v2/api/register_consumer.page")
 dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
@@ -40,3 +41,5 @@ download_images(df_used,imgfldr)
 CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
 #mf = get_minifigs("75173-1",credentials)
+
+
