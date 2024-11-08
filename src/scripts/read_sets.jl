@@ -28,10 +28,10 @@ dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
 #used
-@time df_used = get_prices(credentials,di,sets)
+@time df_used = get_prices(credentials,di,map(x->string(x)*"-1",sets.set_no))
 
 #new prices
-@time df_new = get_prices(credentials,di_new,sets)
+@time df_new = get_prices(credentials,di_new,map(x->string(x)*"-1",sets.set_no))
 
 #download images
 imgfldr = raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\starwars_bricklink_images"

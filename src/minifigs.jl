@@ -43,7 +43,7 @@ end
 
 function get_minifigs(setnos::Vector,credentials;append_setno=true)
     minifigs = DataFrames.DataFrame(minifig=String[],setno=String[],name=String[],category_id=Int[])
-    for i=1:length(setnos)
+    @showprogress for i=1:length(setnos)
         try
             mf = get_minifigs(setnos[i],credentials,append_setno=append_setno)
             append!(minifigs,mf)

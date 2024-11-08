@@ -19,8 +19,7 @@ setnos_SHORT = setnos[1:13]
 mfs = get_minifigs(setnos_SHORT,credentials)
 
 #20 seconds for 150 sets ~ 450 minifigs
+#242 seconds for 1381 sets
 @time mf = get_minifigs(setnos,credentials)
 
-CSV.write(raw"C:\temp\minifigs_list.csv",mf)
-
-
+CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifigs.csv"),mf)

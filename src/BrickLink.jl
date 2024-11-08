@@ -9,6 +9,7 @@ import HTTP
 import DataFrames
 import CSV
 
+using ProgressMeter
 using InfluxDBClient
 
 include("prices.jl")
