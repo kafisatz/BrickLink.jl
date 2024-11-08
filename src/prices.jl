@@ -67,18 +67,18 @@ export get_prices
 function get_prices(credentials,di::Dict,numbers::Vector)
     #request prices from BrickLink API
     dfres = DataFrames.DataFrame()
-    for setno in numbers #sets.set_no
+    @showprogress for setno in numbers #sets.set_no
         #@show setno
-        #setnostring = string(setno) * "-1"
-        setnostring = string(setno) 
+        #nostring = string(setno) * "-1"
+        nostring = string(setno) 
         thisdi = deepcopy(di)
-        thisdi["no"] = setnostring
+        thisdi["no"] = nostring
         try
             df = get_prices(credentials,thisdi)
-            println("Querying prices for set $setnostring ...")
+            println("Querying prices for $nostring ...")
             append!(dfres,df,cols=:union)
         catch e 
-            println("Error querying prices for set $setnostring")
+            println("Error querying prices for $nostring")
             @show e
         end
     end

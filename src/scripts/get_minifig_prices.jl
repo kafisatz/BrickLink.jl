@@ -24,3 +24,8 @@ dftest = get_prices(credentials,di)
 @time mf_used = get_prices(credentials,di,mfuq)
 
 CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifig_prices_used.csv"),mf_used)
+
+#new
+@time mf_new = get_prices(credentials,di_new,mfuq)
+
+CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifig_prices_new.csv"),mf_new)
