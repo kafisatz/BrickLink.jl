@@ -5,13 +5,18 @@ function download_images(df::DataFrames.DataFrame,imgfldr::String)
         return nothing
     end
     for i=1:size(df,1)
-        @info("Downloading image $(i) of $(size(df,1))")
+        
         imgurl = df.imgurl[i]
         imgname = string(df.item[i],".jpg")
         #remove string after -
         imgname = split(imgname,"-")[1] * ".jpg"
         imgpath = joinpath(imgfldr,imgname)
-        download(imgurl,imgpath)
+        if !isfile(imgpath)
+            if !(stat(imgpath).size > 10_000)
+                @info("Downloading image $(i) of $(size(df,1))")
+                download(imgurl,imgpath)
+            end
+        end
     end
 end
 
