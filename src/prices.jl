@@ -15,6 +15,17 @@ oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials
 #item details
 res = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"),require_ssl_verification=false)
 resdesc = JSON3.read(IOBuffer(res.body))
+
+if resdesc.meta.code != 200
+    @warn("you likley need to add your IP here")
+    prinln("https://www.bricklink.com/v2/api/register_consumer.page")
+    @warn("Also you will need to update the auth.json file")
+    @show resdesc.meta.code
+    @show resdesc.meta.description
+    @show resdesc.meta.message
+end
+
+
 resdesc.data.name
 resdesc.data.year_released
 imgurl = raw"https://" * resdesc.data.image_url[3:end]
