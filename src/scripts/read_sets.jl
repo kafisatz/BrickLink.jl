@@ -27,10 +27,10 @@ di_new["new_or_used"] = "N"
 dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
-#used
+#used - 262 seconds for 764 entries (non parallel)
 @time df_used = get_prices(credentials,di,map(x->string(x)*"-1",sets.set_no))
 
-#new prices
+#new prices - 21 seconds with Folds (764 items)
 @time df_new = get_prices(credentials,di_new,map(x->string(x)*"-1",sets.set_no))
 
 #download images
@@ -41,5 +41,6 @@ download_images(df_used,imgfldr)
 CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
 #mf = get_minifigs("75173-1",credentials)
+
 
 

@@ -6,9 +6,10 @@ import JSON3
 import Random
 import OAuth
 import HTTP
-import DataFrames
 import CSV
 
+using Folds
+using DataFrames
 using ProgressMeter
 using InfluxDBClient
 
