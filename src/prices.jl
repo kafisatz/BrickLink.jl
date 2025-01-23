@@ -51,6 +51,9 @@ function get_prices(credentials,di::Dict)
     #extract prices
     prices = js.data.price_detail
     pricelist = Float64[]
+    #i=1
+    #map(x->x.shipping_available,prices)
+    #prices[i]
     for i=1:length(prices)
         if prices[i].shipping_available == true
             prices[i].unit_price

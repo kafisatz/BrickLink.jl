@@ -19,4 +19,9 @@ include("main.jl")
 include("influxdb.jl")
 include("minifigs.jl")
 
+include("get_item_id.jl")
+include("get_prices_and_stores.jl")
+
+include("json.jl")
+
 end
