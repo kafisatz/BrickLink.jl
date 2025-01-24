@@ -1,38 +1,41 @@
-using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth
+using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth; using Dates ; using StatsBase
 
-#list of sets
+#read list of sets
 pt = pathof(BrickLink)
 fi = normpath(joinpath(pt,"..","sets_ishop.txt"))
 sets = CSV.read(fi,DataFrames.DataFrame,header=false)
-DataFrames.rename!(sets,Dict(1=>"set_no"));
-unique!(sets);sort!(sets,:set_no)
+DataFrames.rename!(sets,Dict(1=>"setno"));
+unique!(sets);sort!(sets,:setno)
 #CSV.write(fi,sets,header=false)
 
-itemids = get_item_id.(map(x->x*"-1",string.(sets.set_no)))
+sets[!,:setnowithdash] .= map(x->x*"-1",string.(sets.setno))
+itemids = get_item_id.(sets.setnowithdash)
+sets[!,:itemid] .= itemids
 
 #get prices and stores: 
 #https://www.bricklink.com/ajax/clone/catalogifs.ajax?itemid=52663&ss=CH&rpp=500&iconly=0
 #https://www.bricklink.com/ajax/clone/catalogifs.ajax?itemid=112755&ss=CH&rpp=500&iconly=0
-
 jsvec = get_prices_and_stores.(itemids)
-
+jsvec_index_to_itemid = Dict(1:size(jsvec,1) .=> itemids)
 #write to disk for convenience
 for i=1:size(jsvec,1)
     jwrite(jsvec[i],raw"c:\temp\\" * "$(i)" * ".json")
 end
 
-
-
-
 ##################################################################################################
 #get additional information for each set
 ##################################################################################################
 setno = 75098
-setno = sets.set_no[1]
-setnostring = string(setno) * "-1"
+setnostring = sets.setnowithdash[1]
 di = Dict("type"=>"SET","no"=>setnostring,"new_or_used"=>"U","currency_code"=>"CHF") #U for used, N for new
 di_new = deepcopy(di)
 di_new["new_or_used"] = "N"
+
+#credentials
+fldr = ENV["USERPROFILE"]
+fi = joinpath(fldr,"auth.json")
+@assert isfile(fi)
+credentials = JSON3.read(fi);
 
 @warn("if this fails make sure that your ip is added here: \nhttps://www.bricklink.com/v2/api/register_consumer.page")
 @warn("then UPDATE auth.json")
@@ -40,39 +43,58 @@ dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
 #used - 262 seconds for 764 entries (non parallel)
-@time df_used = get_prices(credentials,di,map(x->string(x)*"-1",sets.set_no))
+@time df_used = get_prices(credentials,di,sets.setnowithdash)
 
 df_info = select(df_used,["item","type","name","year_released","imgurl"])
-df_info[!,:set_no] .= map(x->x[1:end-2],df_info.item)
+rename!(df_info,"item"=>"setnowithdash")
+df_info[!,:setno] .= map(x->x[1:end-2],df_info.setnowithdash)
+bringcolumnstotheleft!(df_info,[:setno,:setnowithdash])
 ##################################################################################################
-##################################################################################################
-
 
 
 ##################################################################################################
 #merge data 
 ##################################################################################################
+sort!(df_info,:setnowithdash)
+sort!(sets,:setnowithdash)
+item_to_setno = Dict(sets.itemid .=> sets.setnowithdash)
+setno_to_item = Dict( sets.setnowithdash .=> sets.itemid)
+setno_to_name = Dict( df_info.setnowithdash .=> df_info.name)
+df_info[!,:itemid] .= map(x->setno_to_item[x],df_info.setnowithdash)
 
+#checks
+@assert length(setno_to_item) == length(item_to_setno)
+@assert length(setno_to_name) == length(item_to_setno)
+@assert all(map(i->setno_to_item[collect(values(item_to_setno))[i]] == collect(keys(item_to_setno))[i],1:length(item_to_setno)))
 
 @assert length(jsvec) == length(itemids)
-@assert length(sets.set_no) == length(itemids)
-@assert length(sets.set_no) == size(df_info,1)
-sort!(df_info,:set_no)
-sort!(sets,:set_no)
+@assert length(sets.setnowithdash) == length(itemids)
+@assert length(sets.setnowithdash) == size(df_info,1)
+@assert isempty(setdiff(df_info.setnowithdash,sets.setnowithdash))
+@assert isempty(setdiff(sets.setnowithdash,df_info.setnowithdash))
+@assert isequal(df_info.setnowithdash,sets.setnowithdash)
 
-@assert isequal(df_info.set_no,sets.set_no)
+variables_of_interest = ["idInv", "strDesc", "codeNew", "codeComplete", "strInvImgUrl", "idInvImg", "n4Qty", "hasExtendedDescription", "instantCheckout", "mDisplaySalePrice", "mInvSalePrice", "nSalePct", "strStorename", "idCurrencyStore", "mMinBuy", "strSellerUsername", "n4SellerFeedbackScore", "strSellerCountryName"]
+#names(dfsupply0)
+#CSV.write(raw"c:\temp\ab.csv",dfsupply0)
 
-df_info
-
-dfsupply = DataFrame() 
+dfsupply = DataFrame()
+supply_dict = Dict{String,DataFrame}()
 for i=1:size(jsvec,1)
-    dfsupply0 = DataFrame(jsvec[i].list)
-    dfsupply0[!,:setno] .= sets.set_no[i]
+    dfsupply0 = parse_data(jsvec[i],jsvec_index_to_itemid[i],setno_to_name,variables_of_interest,item_to_setno,jsvec_index_to_itemid);
+    setnowithdash = item_to_setno[jsvec_index_to_itemid[i]]
+    supply_dict[setnowithdash] = deepcopy(dfsupply0)
+    append!(dfsupply,dfsupply0);
 end
 
-for j=1:size(jsvec[i].list,1)
-    nms = keys(jsvec[i].list)
-    DataFrame(jsvec[i].list)
-    @show nms
-    @show length(nms)
-end
+#discard incomplete sets 
+#I think: B == incomplete, C = complete (used), S == sealed, X == new but no sealed, s = New but not sealed (X is the same as s ??) (maybe X is New 'without comment'?)
+filter!(x->x.codeComplete != "B",dfsupply)
+
+##################################################################################################
+#optimize shopping
+##################################################################################################
+
+
+countmap(dfsupply.codeComplete)
+

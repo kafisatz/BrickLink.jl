@@ -14,10 +14,12 @@ JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 OAuth = "22d8b318-f366-56fb-a292-a93f7d76c017"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 Folds = "0.2.10"
 ProgressMeter = "1.10.2"
+StatsBase = "0.34.4"
 julia = "1.6.7"
 
 [extras]
