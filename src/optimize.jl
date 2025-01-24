@@ -23,7 +23,7 @@ function create_price_matrix(setnolist,shoplist,data;infinite_price=9e20)
         shop = data.strStorename[i]
         price = data.price[i]
         pricedict[(setno,shop)] = price
-        @show i,length(pricedict),i-length(pricedict)
+        #@show i,length(pricedict),i-length(pricedict)
     end
 
     p = zeros(nshops,nsets)
