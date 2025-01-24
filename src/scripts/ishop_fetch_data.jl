@@ -90,11 +90,7 @@ end
 #discard incomplete sets 
 #I think: B == incomplete, C = complete (used), S == sealed, X == new but no sealed, s = New but not sealed (X is the same as s ??) (maybe X is New 'without comment'?)
 filter!(x->x.codeComplete != "B",dfsupply)
-
-##################################################################################################
-#optimize shopping
-##################################################################################################
-
-
 countmap(dfsupply.codeComplete)
+
+#CSV.write(raw"C:\temp\dfsupply.csv",dfsupply)
 
