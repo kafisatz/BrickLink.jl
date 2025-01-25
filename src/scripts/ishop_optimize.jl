@@ -1,5 +1,5 @@
-using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth; using Dates ; using StatsBase
-
+#using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth; using Dates ; using StatsBase
+using CSV; using DataFrames
 ##################################################################################################
 #optimize shopping
 ##################################################################################################
@@ -31,6 +31,7 @@ shoplist_shippingcosts_di = Dict(shoplist .=> shipping_cost_fixed_value)
 shippingcosts_vec = ones(nshops) .* shipping_cost_fixed_value
 
 infinite_price = 9e20 #large number (if item is not available in a certain shop)
+
 P = create_price_matrix(setnolist,shoplist,data);
 one_vector = ones(Int,nsets)
 #objective:
@@ -60,14 +61,11 @@ sum(Mtest,dims=1)
 transpose(one_vector) * ((Mtest * P) * one_vector) + shipping_costs
 
 #using JuMP;using Alpine;using Ipopt;using HiGHS
-#model = Model(HiGHS.Optimizer)
-#model = Model(Ipopt.Optimizer)
-#ipopt = optimizer_with_attributes(Ipopt.Optimizer, "print_level" => 0) ; highs = optimizer_with_attributes(HiGHS.Optimizer, "output_flag" => false); model = Model(optimizer_with_attributes(Alpine.Optimizer,"nlp_solver" => ipopt,"mip_solver" => highs,),)
+#using HiGHS; model = Model(HiGHS.Optimizer)
+#using Ipopt; model = Model(Ipopt.Optimizer)
+using Alpine;using Ipopt;using HiGHS;ipopt = optimizer_with_attributes(Ipopt.Optimizer, "print_level" => 0) ; highs = optimizer_with_attributes(HiGHS.Optimizer, "output_flag" => false); model = Model(optimizer_with_attributes(Alpine.Optimizer,"nlp_solver" => ipopt,"mip_solver" => highs,),)
 #using MadNLP; model = Model(()->MadNLP.Optimizer(print_level=MadNLP.INFO, max_iter=100))
-using Juniper;using Ipopt;
-ipopt = optimizer_with_attributes(Ipopt.Optimizer, "print_level"=>0)
-optimizer = optimizer_with_attributes(Juniper.Optimizer, "nl_solver"=>ipopt)
-model = Model(optimizer)
+#using Juniper;using Ipopt; ipopt = optimizer_with_attributes(Ipopt.Optimizer, "print_level"=>0); optimizer = optimizer_with_attributes(Juniper.Optimizer, "nl_solver"=>ipopt); model = Model(optimizer)
 
 #M_ij == true <-> we buy setnolist[i] from shoplist[j]
 @variable(model, M[i = 1:nsets, j = 1:nshops],integer = true)
