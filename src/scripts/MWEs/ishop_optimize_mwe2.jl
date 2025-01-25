@@ -1,41 +1,31 @@
-using JuMP
-import CSV
-import DataFrames
-import HiGHS
-data = CSV.read(
-    download(
-        raw"https://gist.githubusercontent.com/kafisatz/12ccf544a3924816be378cb785e0b04b/raw/c2baed05921e8f0e84ed0ccbdbdfb531ac7d90ab/dfsupply.csv",
-    ),
-    DataFrames.DataFrame;
-    types = Dict("setnowithdash" => String),
-)
+using BrickLink
+using JuMP;import CSV;import DataFrames;import HiGHS
+
+@info("run ishop_fetch_data.jl to generate the data.")
+data = CSV.read(raw"c:\temp\dfsupply.csv",DataFrames.DataFrame;types = Dict("setnowithdash" => String))
 sort!(data, [:setnowithdash, :strStorename, :price])
 unique!(data, [:setnowithdash, :strStorename])
+
+#subset
 setnolist = sort(unique(data.setnowithdash)[1:end])
 filter!(x -> x.setnowithdash in setnolist, data);
 shoplist = sort(unique(data.strStorename))
 nsets, nshops = length(setnolist), length(shoplist)
 shippingcosts_vec = fill(25.0, nshops)
 
-function create_price_matrix(setnolist, shoplist, data)
-    nsets, nshops = length(setnolist), length(shoplist)
-    for shop in shoplist
-        @assert size(filter(x -> x.strStorename == shop, data), 1) > 0
-    end
-    for setno in setnolist
-        @assert size(filter(x -> x.setnowithdash == setno, data), 1) > 0
-    end
-    pricedict = Dict(
-        (data.setnowithdash[i], data.strStorename[i]) => data.price[i]
-        for i in 1:size(data,1)
-    )
-    p = [
-        get(pricedict, (setnolist[i], shoplist[j]), Inf)
-        for i in 1:nsets, j in 1:nshops
-    ]
-    @assert sum(p .< Inf) == size(data, 1)
-    return p 
-end
+
+#M_ij == 1 <-> we buy setnolist[i] from shoplist[j]
+#M_init = zeros(Int,nsets,nshops)
+
+#objective:
+#We want to minimize Sum_ij (P * M) + shipping costs 
+#shipping costs = Sum_j (shoplist_shippingcosts_di[j]) for each shop j where order at least one item (i.e. if the sum of column j of M is larger than zero)
+
+#P -> price matrix, number of rows == nshops, number of columns == nsets
+#M -> optimization variable, each entry must be 0 or 1, number of rows == nsets, number of columns == nshops
+#M * P -> size is nsets X nsets
+#(M * P) * one_vector is a vector of length nsets
+#transpose(one_vector) * ((M * P) * one_vector) should be a float
 
 P = create_price_matrix(setnolist, shoplist, data);
 model = Model(HiGHS.Optimizer)

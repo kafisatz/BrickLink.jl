@@ -141,7 +141,9 @@ end
 print(model)
 @time optimize!(model)
 
+termination_status(model)
 primal_status(model)
 dual_status(model)
 objective_value(model)
 is_solved_and_feasible(model)
+value(M)
