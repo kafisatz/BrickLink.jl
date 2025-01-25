@@ -122,5 +122,9 @@ function fit_model(data,P,setnolist,shoplist,shippingcosts_vec,nsets, nshops)
     sum(to_buy.price)
     @assert isapprox(sum(to_buy.price) + sum(shippingcosts_vec[shop_idx])  - objective_value(model),0)
 
-    return to_buy,Mv
+    gb = groupby(to_buy,[:strStorename,:strSellerCountryName])
+    smry = combine(gb,:price => sum =>:price,:strSellerCountryName => length => :Lots)
+    sort!(smry,:price,rev=true)
+
+    return to_buy,Mv,smry
 end

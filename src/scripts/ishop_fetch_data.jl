@@ -87,10 +87,10 @@ for i=1:size(jsvec,1)
     append!(dfsupply,dfsupply0);
 end
 
-#discard incomplete sets 
+#discard incomplete sets
 #I think: B == incomplete, C = complete (used), S == sealed, X == new but no sealed, s = New but not sealed (X is the same as s ??) (maybe X is New 'without comment'?)
 filter!(x->x.codeComplete != "B",dfsupply)
 countmap(dfsupply.codeComplete)
 
-#CSV.write(raw"C:\temp\dfsupply.csv",dfsupply)
+CSV.write(raw"C:\temp\dfsupply.csv",dfsupply)
 

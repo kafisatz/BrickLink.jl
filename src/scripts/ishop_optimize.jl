@@ -60,8 +60,9 @@ end
 
 P = create_price_matrix(setnolist, shoplist, data);
 
-@time to_buy,Mv = fit_model(data,P,setnolist,shoplist,shippingcosts_vec,nsets, nshops);
+@time to_buy,Mv,smry = fit_model(data,P,setnolist,shoplist,shippingcosts_vec,nsets, nshops);
 
 to_buy
+price_wo_shipping = sum(to_buy.price) 
 CSV.write(raw"c:\temp\to.csv",to_buy)
 0
