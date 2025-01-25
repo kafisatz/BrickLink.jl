@@ -11,7 +11,7 @@ data = CSV.read(
 )
 sort!(data, [:setnowithdash, :strStorename, :price])
 unique!(data, [:setnowithdash, :strStorename])
-setnolist = sort(unique(data.setnowithdash)[2:7])
+setnolist = sort(unique(data.setnowithdash)[1:end])
 filter!(x -> x.setnowithdash in setnolist, data);
 shoplist = sort(unique(data.strStorename))
 nsets, nshops = length(setnolist), length(shoplist)
@@ -54,3 +54,9 @@ model = Model(HiGHS.Optimizer)
     sum(M_fixed_cost[j] * shippingcosts_vec[j] for j in 1:nshops),
 )
 optimize!(model)
+
+
+primal_status(model)
+dual_status(model)
+objective_value(model)
+is_solved_and_feasible(model)
