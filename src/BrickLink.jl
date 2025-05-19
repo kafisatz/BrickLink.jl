@@ -17,8 +17,8 @@ using DataFrames
 using ProgressMeter
 using InfluxDBClient
 
-using JuMP
-import HiGHS
+#using JuMP
+#import HiGHS
 
 include("country.jl")
 include("prices.jl")
@@ -34,6 +34,6 @@ include("common.jl")
 include("json.jl")
 include("fxrate.jl")
 
-include("optimize.jl")
+#include("optimize.jl")
 
 end

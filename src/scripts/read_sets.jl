@@ -27,7 +27,7 @@ di_new["new_or_used"] = "N"
 dftest = get_prices(credentials,di)
 dftest = get_prices(credentials,di_new)
 
-#used - 262 seconds for 764 entries (non parallel)
+#used - ca. 20 seconds for 950 items (Folds) - without Folds -> 262 seconds for 764 entries (non parallel)
 @time df_used = get_prices(credentials,di,map(x->string(x)*"-1",sets.set_no))
 
 #new prices - 21 seconds with Folds (764 items)

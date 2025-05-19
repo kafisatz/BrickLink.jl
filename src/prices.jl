@@ -18,7 +18,7 @@ function get_prices(credentials,di::Dict)
 
     if resdesc.meta.code != 200
         @warn("you likley need to add your IP here")
-        prinln("https://www.bricklink.com/v2/api/register_consumer.page")
+        println("https://www.bricklink.com/v2/api/register_consumer.page")
         @warn("Also you will need to update the auth.json file")
         @show resdesc.meta.code
         @show resdesc.meta.description
