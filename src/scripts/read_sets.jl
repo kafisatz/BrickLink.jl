@@ -48,5 +48,14 @@ CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
 #mf = get_minifigs("75173-1",credentials)
 
+using MySQL
+mysqlpassword = ENV["mysqlpassword.55ip"]
+mysqlusername = "root"
+mysqlhost = "10.14.15.55"
 
-
+conn = DBInterface.connect(MySQL.Connection,mysqlhost, mysqlusername, mysqlpassword, db="brick")
+#drop table from DB 
+DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_used;")
+DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_new;")
+MySQL.load(df_used, conn, "prices_used")
+MySQL.load(df_new, conn, "prices_new")
