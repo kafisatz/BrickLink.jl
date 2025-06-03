@@ -38,6 +38,12 @@ imgfldr = raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\starwars_brickl
 @assert isdir(imgfldr)
 download_images(df_used,imgfldr)
 
+#discard columns after price 200 (too many columns for mySQL table #1118 - Row size too large (> 8126))
+
+#keep first 200 columns only
+df_used = df_used[:, 1:min(200, size(df_used, 2))]
+df_new = df_new[:, 1:min(200, size(df_new, 2))]
+
 CSV.write(raw"C:\temp\prices_used.csv",df_used)
 CSV.write(raw"C:\temp\prices_new.csv",df_new)
 #mf = get_minifigs("75173-1",credentials)
