@@ -59,3 +59,5 @@ DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_used;")
 DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_new;")
 MySQL.load(df_used, conn, "prices_used")
 MySQL.load(df_new, conn, "prices_new")
+
+

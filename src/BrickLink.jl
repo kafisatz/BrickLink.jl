@@ -34,6 +34,8 @@ include("common.jl")
 include("json.jl")
 include("fxrate.jl")
 
+include("xml.jl")
+
 #include("optimize.jl")
 
 end
