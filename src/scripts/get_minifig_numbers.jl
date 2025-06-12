@@ -1,4 +1,5 @@
 using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth
+#minifigure / minifig script
 #credentials
 fldr = ENV["USERPROFILE"]; fi = joinpath(fldr,"auth.json"); @assert isfile(fi)
 credentials = JSON3.read(fi);
