@@ -19,7 +19,6 @@ listsw = convert(Vector{String},(listsw0.minifig))
 @time minifigdf = get_minifig_list(listsw,credentials)
 CSV.write(raw"Q:\MinifigDB.csv",minifigdf)
 
-
 #download images 
 function dn(minifigdf)
     outdir =raw"Q:\reference_images\bricklink"
