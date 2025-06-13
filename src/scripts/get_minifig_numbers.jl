@@ -1,4 +1,4 @@
-using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth
+using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth;using Folds
 #minifigure / minifig script
 #credentials
 fldr = ENV["USERPROFILE"]; fi = joinpath(fldr,"auth.json"); @assert isfile(fi)
@@ -10,7 +10,20 @@ mf = get_minifigs("75125-1",credentials); @assert size(mf,1) >0
 mf = get_minifigs("7181-1",credentials); @assert size(mf,1) == 0
 mf = get_minifigs("75397-1",credentials); @assert size(mf,1) >5
 
-#read set list (all LSW)
+#CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifigs.csv"),mf)
+
+#get them DIRECTLY
+listsw0 = CSV.read(raw"q:\minifigs_sw.csv", DataFrame)
+listsw = convert(Vector{String},(listsw0.minifig))
+#15 s
+@time minifigdf = get_minifig_list(listsw,credentials)
+CSV.write(raw"Q:\MinifigDB.csv",minifigdf)
+
+###############################################################
+#old approach with 'set' reference 
+###############################################################
+if false 
+    #read set list (all LSW)
 df = CSV.read(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),DataFrame)
 setnos = convert(Vector{String},map(x->x*"-1",df.number))
 
@@ -22,10 +35,4 @@ mfs = get_minifigs(setnos_SHORT,credentials)
 #20 seconds for 150 sets ~ 450 minifigs
 #242 seconds for 1381 sets
 @time mf = get_minifigs(setnos,credentials)
-
-CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifigs.csv"),mf)
-
-
-#get them DIRECTLY
-
-r = get_minifig_via_number("sw0058",credentials)
+end 

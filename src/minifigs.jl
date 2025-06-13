@@ -106,9 +106,7 @@ end
 
 export get_minifig_list
 function get_minifig_list(listsw,credentials)
-    Folds.map(x->get_minifig_via_number(x,credentials),listsw)
-    df0 = DataFrames.DataFrame()
-    error("in the works")        
-
+    v = Folds.map(x->get_minifig_via_number(x,credentials),listsw)
+    df0 = vcat(v...)
     return df0 
 end
