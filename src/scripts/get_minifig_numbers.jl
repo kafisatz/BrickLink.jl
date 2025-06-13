@@ -24,3 +24,8 @@ mfs = get_minifigs(setnos_SHORT,credentials)
 @time mf = get_minifigs(setnos,credentials)
 
 CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifigs.csv"),mf)
+
+
+#get them DIRECTLY
+
+r = get_minifig_via_number("sw0058",credentials)

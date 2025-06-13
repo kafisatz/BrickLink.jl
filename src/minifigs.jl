@@ -5,6 +5,10 @@ function get_minifigs(setno::String,credentials;append_setno=true)
     type="SET"
     @assert occursin("-",setno) "You must provide the set number in the format 75173-1"
 
+#=
+baseurl = "https://api.bricklink.com/api/store/v1/items/MINIFIG/sw0075"
+=#
+
     baseurl = "https://api.bricklink.com/api/store/v1"
     endpoint = string(baseurl,"/items/",type,"/",setno,"/subsets")
     #"https://api.bricklink.com/api/store/v1/items/SET/10030-1"
@@ -68,5 +72,43 @@ function fix_json_parsing(str)
     return str
 end
 
+export get_minifig_via_number
+function get_minifig_via_number(minifig_no::String,credentials)
+    try
+        type="MINIFIG"
+        httpmethod = "GET"
+        #minifig_no="sw0058"
 
-    
+        baseurl = "https://api.bricklink.com/api/store/v1"
+        endpoint = string(baseurl,"/items/",type,"/",minifig_no)
+        #"https://api.bricklink.com/api/store/v1/items/SET/10030-1"
+
+        options = Dict{String,String}(""=>"")
+        query_str = HTTP.escapeuri(options)
+        oauth_header_val = OAuth.oauth_header(httpmethod, endpoint, options, credentials["ConsumerKey"], credentials["ConsumerSecret"], credentials["TokenValue"], credentials["TokenSecret"])
+
+        #Make request
+        #item details
+        res = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"),require_ssl_verification=false)
+        resdesc = JSON3.read(IOBuffer(res.body))
+        resdesc.data
+        #flatten this data into a dataframe row
+        errormsg=""
+        df = DataFrames.DataFrame(minifig=resdesc.data.no, weight=resdesc.data.weight, year_released=resdesc.data.year_released,name=resdesc.data.name,category_id=resdesc.data.category_id,errormsg=errormsg)
+        return df
+    catch e 
+        errormsg = string(e)
+        df = DataFrames.DataFrame(minifig=minifig_no, weight=missing, year_released=missing,name=missing,category_id=missing,errormsg=errormsg)
+        return df
+    end
+    return df
+end
+
+export get_minifig_list
+function get_minifig_list(listsw,credentials)
+    Folds.map(x->get_minifig_via_number(x,credentials),listsw)
+    df0 = DataFrames.DataFrame()
+    error("in the works")        
+
+    return df0 
+end
