@@ -19,20 +19,32 @@ listsw = convert(Vector{String},(listsw0.minifig))
 @time minifigdf = get_minifig_list(listsw,credentials)
 CSV.write(raw"Q:\MinifigDB.csv",minifigdf)
 
+
+#download images 
+function dn(minifigdf)
+    outdir =raw"Q:\reference_images\bricklink"
+    @assert isdir(outdir)
+    Folds.map(x->download(string("https:",x.image_url),joinpath(outdir,string(x.minifig,splitext(rw.image_url)[2]))),eachrow(minifigdf))
+    return nothing 
+end
+
+#takes 16 seconds
+#@time dn(minifigdf[1:end,:])
+
 ###############################################################
 #old approach with 'set' reference 
 ###############################################################
 if false 
     #read set list (all LSW)
-df = CSV.read(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),DataFrame)
-setnos = convert(Vector{String},map(x->x*"-1",df.number))
+    df = CSV.read(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),DataFrame)
+    setnos = convert(Vector{String},map(x->x*"-1",df.number))
 
-#setnos = map(x->string(x)*"-1",sets.set_no)
+    #setnos = map(x->string(x)*"-1",sets.set_no)
 
-setnos_SHORT = setnos[1:13]
-mfs = get_minifigs(setnos_SHORT,credentials)
+    setnos_SHORT = setnos[1:13]
+    mfs = get_minifigs(setnos_SHORT,credentials)
 
-#20 seconds for 150 sets ~ 450 minifigs
-#242 seconds for 1381 sets
-@time mf = get_minifigs(setnos,credentials)
+    #20 seconds for 150 sets ~ 450 minifigs
+    #242 seconds for 1381 sets
+    @time mf = get_minifigs(setnos,credentials)
 end 

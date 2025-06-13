@@ -78,6 +78,7 @@ function get_minifig_via_number(minifig_no::String,credentials)
         type="MINIFIG"
         httpmethod = "GET"
         #minifig_no="sw0058"
+        #minifig_no="sw0387"
 
         baseurl = "https://api.bricklink.com/api/store/v1"
         endpoint = string(baseurl,"/items/",type,"/",minifig_no)
@@ -94,11 +95,11 @@ function get_minifig_via_number(minifig_no::String,credentials)
         resdesc.data
         #flatten this data into a dataframe row
         errormsg=""
-        df = DataFrames.DataFrame(minifig=resdesc.data.no, weight=resdesc.data.weight, year_released=resdesc.data.year_released,name=resdesc.data.name,category_id=resdesc.data.category_id,errormsg=errormsg)
+        df = DataFrames.DataFrame(minifig=resdesc.data.no, image_url = resdesc.data.image_url, thumbnail_url = resdesc.data.thumbnail_url, weight=resdesc.data.weight, year_released=resdesc.data.year_released,name=resdesc.data.name,category_id=resdesc.data.category_id,errormsg=errormsg)
         return df
     catch e 
         errormsg = string(e)
-        df = DataFrames.DataFrame(minifig=minifig_no, weight=missing, year_released=missing,name=missing,category_id=missing,errormsg=errormsg)
+        df = DataFrames.DataFrame(minifig=minifig_no, image_url = missing, thumbnail_url = missing, weight=missing, year_released=missing,name=missing,category_id=missing,errormsg=errormsg)
         return df
     end
     return df
@@ -109,4 +110,14 @@ function get_minifig_list(listsw,credentials)
     v = Folds.map(x->get_minifig_via_number(x,credentials),listsw)
     df0 = vcat(v...)
     return df0 
+end
+
+export trydownload
+function trydownload(url,loc)
+    try 
+        download(url,loc)
+    catch e
+        @show e
+    end
+    return nothing 
 end
