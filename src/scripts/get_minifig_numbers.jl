@@ -17,7 +17,7 @@ list_all = sort(unique(convert(Vector{String},CSV.read(raw"q:\minifigdb\unique_m
 listsw0 = CSV.read(raw"q:\minifigdb\minifigs_sw.csv", DataFrame)
 listsw = convert(Vector{String},(listsw0.minifig))
 
-#15 s
+#15 s #bricklink is blocking this.....
 @time minifigdf = get_minifig_list(listsw,credentials)
 CSV.write(raw"Q:\minifigdb\MinifigDB.csv",minifigdf)
 
