@@ -1,4 +1,4 @@
-using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth;using Folds
+using Dates; using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using HTTP; using OAuth;using Folds
 #minifigure / minifig script
 #credentials
 fldr = ENV["USERPROFILE"]; fi = joinpath(fldr,"auth.json"); @assert isfile(fi)
@@ -13,11 +13,18 @@ mf = get_minifigs("75397-1",credentials); @assert size(mf,1) >5
 #CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","BrickLink","minifigs.csv"),mf)
 
 #get them DIRECTLY
-listsw0 = CSV.read(raw"q:\minifigs_sw.csv", DataFrame)
+list_all = sort(unique(convert(Vector{String},CSV.read(raw"q:\minifigdb\unique_minifig_codes20250703-233643.csv",DataFrame).minifig_code)))
+listsw0 = CSV.read(raw"q:\minifigdb\minifigs_sw.csv", DataFrame)
 listsw = convert(Vector{String},(listsw0.minifig))
+
 #15 s
 @time minifigdf = get_minifig_list(listsw,credentials)
-CSV.write(raw"Q:\MinifigDB.csv",minifigdf)
+CSV.write(raw"Q:\minifigdb\MinifigDB.csv",minifigdf)
+
+#15 s
+@time minifigdfall = get_minifig_list(list_all[1:100],credentials)
+timestamp = Dates.format(Dates.now(),"yyyymmdd-HHMMSS")
+CSV.write(joinpath(raw"Q:\minifigdb",string("MinifigDBall",timestamp,".csv")),minifigdfall)
 
 #download images 
 function dn(minifigdf)

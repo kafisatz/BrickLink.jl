@@ -92,6 +92,7 @@ function get_minifig_via_number(minifig_no::String,credentials)
         #item details
         res = HTTP.get("$(endpoint)?$query_str"; headers = Dict{String,String}("Content-Type" => "application/x-www-form-urlencoded","Authorization" => oauth_header_val,"Accept" => "*/*"),require_ssl_verification=false)
         resdesc = JSON3.read(IOBuffer(res.body))
+        resdesc.meta
         resdesc.data
         #flatten this data into a dataframe row
         errormsg=""
