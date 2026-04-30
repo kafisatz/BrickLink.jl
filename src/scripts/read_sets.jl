@@ -5,14 +5,14 @@ pt = pathof(BrickLink)
 fi = normpath(joinpath(pt,"..","set_list.txt"))
 sets = CSV.read(fi,DataFrames.DataFrame,header=false)
 DataFrames.rename!(sets,Dict(1=>"set_no"));
-unique!(sets);sort!(sets,:set_no)
+unique!(sets);sort!(sets,:set_no); "75447" in sets.set_no
 #CSV.write(fi,sets,header=false)
  
 #credentials
 fldr = ENV["USERPROFILE"]
 fi = joinpath(fldr,"auth.json")
 @assert isfile(fi)
-credentials = JSON3.read(fi);
+credentials = JSON3.read(read(fi));
 
 #test
 setno = 75098
