@@ -24,7 +24,7 @@ di_new["new_or_used"] = "N"
 
 @warn("if this fails make sure that your ip is added here: \nhttps://www.bricklink.com/v2/api/register_consumer.page")
 @warn("then UPDATE auth.json")
-dftest = get_prices(credentials,di)
+dftest = get_prices(credentials,di) #if you get an error, watch the IP which is mentioned in the error message (and use it on the bricklink page above for registering your IP address)
 dftest = get_prices(credentials,di_new)
 
 #used - ca. 20 seconds for 950 items (Folds) - without Folds -> 262 seconds for 764 entries (non parallel)
