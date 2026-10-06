@@ -2,7 +2,11 @@ using Revise; using BrickLink;import CSV; using DataFrames; using JSON3; using H
 
 #list of sets
 pt = pathof(BrickLink)
-fi = normpath(joinpath(pt,"..","set_list.txt"))
+#read from Brickset jl folder
+brickset_path = normpath(joinpath(pt,"..","..","..","Brickset.jl"))
+@assert isdir(brickset_path) "Brickset.jl folder not found at expected location - use git clone to create it and upate set_list.txt there \r\n $brickset_path"
+fi = normpath(joinpath(brickset_path,"set_list.txt"))
+@show file_updated_at = stat(fi).mtime
 sets = CSV.read(fi,DataFrames.DataFrame,header=false)
 DataFrames.rename!(sets,Dict(1=>"set_no"));
 unique!(sets);sort!(sets,:set_no); "75447" in sets.set_no
