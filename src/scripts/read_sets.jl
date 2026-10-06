@@ -9,7 +9,7 @@ unique!(sets);sort!(sets,:set_no); "75447" in sets.set_no
 #CSV.write(fi,sets,header=false)
  
 #credentials
-fldr = ENV["USERPROFILE"]
+fldr = homedir()
 fi = joinpath(fldr,"auth.json")
 @assert isfile(fi)
 credentials = JSON3.read(read(fi));
@@ -36,7 +36,9 @@ dftest = get_prices(credentials,di_new)
 #download images
 imgfldr = raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\starwars_bricklink_images"
 @assert isdir(imgfldr)
-download_images(df_used,imgfldr)
+if isdir(imgfldr)
+    download_images(df_used,imgfldr)
+end
 
 #discard columns after price 200 (too many columns for mySQL table #1118 - Row size too large (> 8126))
 
@@ -44,8 +46,11 @@ download_images(df_used,imgfldr)
 df_used = df_used[:, 1:min(200, size(df_used, 2))]
 df_new = df_new[:, 1:min(200, size(df_new, 2))]
 
-CSV.write(raw"C:\temp\prices_used.csv",df_used)
-CSV.write(raw"C:\temp\prices_new.csv",df_new)
+tmproot = Sys.iswindows() ? raw"C:\temp" : "/tmp"
+@assert isdir(tmproot)
+
+CSV.write(joinpath(tmproot,"prices_used.csv"),df_used)
+CSV.write(joinpath(tmproot,"prices_new.csv"),df_new)
 #mf = get_minifigs("75173-1",credentials)
 
 using MySQL
@@ -60,5 +65,4 @@ DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_new;")
 MySQL.load(df_used, conn, "prices_used")
 MySQL.load(df_new, conn, "prices_new")
 0
-
 
