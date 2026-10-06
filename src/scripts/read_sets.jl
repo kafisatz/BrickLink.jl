@@ -59,7 +59,7 @@ mysqlusername = "root"
 mysqlhost = "10.14.15.55"
 
 conn = DBInterface.connect(MySQL.Connection,mysqlhost, mysqlusername, mysqlpassword, db="brick")
-#drop table from DB 
+#drop table from DB
 DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_used;")
 DBInterface.execute(conn, "DROP TABLE IF EXISTS prices_new;")
 MySQL.load(df_used, conn, "prices_used")
